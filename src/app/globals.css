@@ -1,0 +1,136 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-maimara-primary: #da3c55;
+  --color-maimara-secondary: #e7758f;
+  --color-maimara-light: #ffa4b3;
+  --color-maimara-blush: #fbc9d4;
+  --color-maimara-cream: #fff5f7;
+
+  /* Modo oscuro — medianoche cálida (oscuro real, tinte rosa Maimará) */
+  --color-maimara-charcoal: #1a1618;
+  --color-maimara-carbon: #211c1f;
+  --color-maimara-surface: #2a2427;
+  --color-maimara-elevated: #332d30;
+  --color-maimara-input: #3a3437;
+  --color-maimara-border: #4f474b;
+  --color-maimara-muted: #8a7b81;
+  --color-maimara-subtle: #b5a8ad;
+
+  --font-display: var(--font-great-vibes);
+  --font-body: var(--font-inter);
+
+  --shadow-artisan: 0 4px 20px rgba(218, 60, 85, 0.12);
+  --shadow-card: 0 4px 24px rgba(218, 60, 85, 0.08);
+  --shadow-card-dark: 0 8px 32px rgba(0, 0, 0, 0.35);
+  --radius-artisan: 1.25rem;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-maimara-cream text-neutral-800 antialiased transition-[background-color,color] duration-300;
+    font-family: var(--font-body), system-ui, sans-serif;
+  }
+
+  html.dark body {
+    @apply text-neutral-200;
+    background-color: var(--color-maimara-charcoal);
+    background-image:
+      radial-gradient(
+        ellipse 90% 55% at 50% -15%,
+        rgba(218, 60, 85, 0.11),
+        transparent 55%
+      ),
+      radial-gradient(
+        ellipse 50% 35% at 100% 100%,
+        rgba(231, 117, 143, 0.06),
+        transparent 50%
+      );
+  }
+
+  html.dark input,
+  html.dark textarea,
+  html.dark select {
+    color-scheme: dark;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display), cursive;
+  }
+
+  .gradient-maimara {
+    background: linear-gradient(
+      135deg,
+      var(--color-maimara-primary),
+      var(--color-maimara-secondary)
+    );
+  }
+
+  .card-artisan {
+    @apply rounded-[var(--radius-artisan)] border shadow-[var(--shadow-card)] transition-[background-color,border-color,box-shadow] duration-300;
+    @apply border-maimara-blush bg-white;
+    @apply dark:border-maimara-border/80 dark:bg-maimara-surface dark:shadow-[var(--shadow-card-dark)];
+    @apply dark:hover:border-maimara-primary/25;
+  }
+
+  .text-muted {
+    @apply text-neutral-600 dark:text-maimara-subtle;
+  }
+
+  .label-field {
+    @apply block text-sm font-semibold text-neutral-800 dark:text-neutral-100;
+  }
+
+  .input-field {
+    @apply mt-1.5 w-full rounded-xl border px-4 py-3 text-base outline-none transition;
+    @apply border-maimara-blush bg-white text-neutral-900;
+    @apply placeholder:text-neutral-400;
+    @apply focus:border-maimara-primary focus:ring-2 focus:ring-maimara-primary/25;
+    @apply dark:border-maimara-border dark:bg-maimara-input dark:text-neutral-100;
+    @apply dark:placeholder:text-maimara-muted;
+    @apply dark:focus:border-maimara-light dark:focus:ring-maimara-primary/20;
+  }
+
+  .option-card {
+    @apply flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition;
+    @apply border-maimara-blush bg-white;
+    @apply has-[:checked]:border-maimara-primary has-[:checked]:bg-maimara-primary/5;
+    @apply dark:border-maimara-border dark:bg-maimara-input;
+    @apply dark:has-[:checked]:border-maimara-light dark:has-[:checked]:bg-maimara-primary/12;
+  }
+
+  .btn-qty {
+    @apply flex h-9 w-9 items-center justify-center rounded-full border text-lg font-medium transition;
+    @apply border-maimara-blush bg-white text-neutral-800 hover:bg-maimara-cream;
+    @apply dark:border-maimara-border dark:bg-maimara-elevated dark:text-neutral-100;
+    @apply dark:hover:border-maimara-primary/40 dark:hover:bg-maimara-input;
+  }
+
+  .site-header {
+    @apply sticky top-0 z-50 border-b backdrop-blur-md transition-colors duration-300;
+    @apply border-maimara-blush bg-white/95;
+    @apply dark:border-maimara-border/70 dark:bg-maimara-carbon/90;
+  }
+
+  .site-footer {
+    @apply mt-auto border-t transition-colors duration-300;
+    @apply border-maimara-blush bg-white text-neutral-700;
+    @apply dark:border-maimara-border/70 dark:bg-maimara-carbon dark:text-neutral-300;
+  }
+
+  .dark-section-title {
+    @apply text-maimara-primary dark:text-maimara-light;
+  }
+}

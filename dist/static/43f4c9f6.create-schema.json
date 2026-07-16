@@ -1,0 +1,424 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "readOnly": true,
+        "name": "email",
+        "type": "string",
+        "title": "Correo electrónico"
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "title": "Nombre"
+      },
+      {
+        "readOnly": true,
+        "hidden": true,
+        "name": "passwordHash",
+        "type": "string",
+        "title": "Hash de contraseña"
+      },
+      {
+        "readOnly": true,
+        "name": "createdAt",
+        "type": "datetime",
+        "title": "Fecha de registro"
+      }
+    ],
+    "name": "user",
+    "type": "document",
+    "title": "Usuario"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Nombre"
+      },
+      {
+        "options": {
+          "source": "name",
+          "maxLength": 96
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "custom"
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "slug",
+        "type": "slug"
+      },
+      {
+        "rows": 3,
+        "name": "description",
+        "type": "text",
+        "title": "Descripción"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "price",
+        "type": "number",
+        "title": "Precio (ARS)"
+      },
+      {
+        "options": {
+          "hotspot": true
+        },
+        "name": "image",
+        "type": "image",
+        "title": "Imagen"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Tortas",
+              "value": "tortas"
+            },
+            {
+              "title": "Tartas",
+              "value": "tartas"
+            },
+            {
+              "title": "Galletitas",
+              "value": "galletitas"
+            },
+            {
+              "title": "Alfajores",
+              "value": "alfajores"
+            },
+            {
+              "title": "Budines",
+              "value": "budines"
+            },
+            {
+              "title": "Mesas dulces",
+              "value": "mesas-dulces"
+            }
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "tortas",
+                  "tartas",
+                  "galletitas",
+                  "alfajores",
+                  "budines",
+                  "mesas-dulces"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "category",
+        "type": "string",
+        "title": "Categoría"
+      },
+      {
+        "initialValue": true,
+        "name": "available",
+        "type": "boolean",
+        "title": "Disponible para venta"
+      }
+    ],
+    "name": "product",
+    "type": "document",
+    "title": "Producto"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "product"
+          }
+        ],
+        "name": "product",
+        "type": "reference",
+        "title": "Producto"
+      },
+      {
+        "initialValue": 1,
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "quantity",
+        "type": "number",
+        "title": "Cantidad"
+      }
+    ],
+    "name": "orderItem",
+    "type": "object",
+    "title": "Ítem de pedido"
+  },
+  {
+    "fields": [
+      {
+        "to": [
+          {
+            "type": "user"
+          }
+        ],
+        "name": "user",
+        "type": "reference",
+        "title": "Usuario"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "customerName",
+        "type": "string",
+        "title": "Nombre del cliente"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "contactPhone",
+        "type": "string",
+        "title": "Teléfono de contacto"
+      },
+      {
+        "name": "orderDate",
+        "type": "datetime",
+        "title": "Fecha del pedido"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 1
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "of": [
+          {
+            "type": "orderItem",
+            "title": "Ítem de pedido"
+          }
+        ],
+        "name": "items",
+        "type": "array",
+        "title": "Productos"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "Retiro por el local",
+              "value": "pickup"
+            },
+            {
+              "title": "Envío a domicilio",
+              "value": "delivery"
+            }
+          ],
+          "layout": "radio"
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "pickup",
+                  "delivery"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "deliveryMethod",
+        "type": "string",
+        "title": "Método de entrega"
+      },
+      {
+        "hidden": "conditional",
+        "name": "deliveryAddress",
+        "type": "string",
+        "title": "Dirección de entrega"
+      },
+      {
+        "options": {
+          "list": [
+            {
+              "title": "En preparación",
+              "value": "preparing"
+            },
+            {
+              "title": "Listo para entregar / Listo",
+              "value": "ready"
+            },
+            {
+              "title": "En camino (solo envío)",
+              "value": "on_the_way"
+            },
+            {
+              "title": "Entregado (solo envío)",
+              "value": "delivered"
+            }
+          ]
+        },
+        "initialValue": "preparing",
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "preparing",
+                  "ready",
+                  "on_the_way",
+                  "delivered"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "custom"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "status",
+        "type": "string",
+        "title": "Estado del pedido"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              },
+              {
+                "flag": "min",
+                "constraint": 0
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "totalAmount",
+        "type": "number",
+        "title": "Monto total (ARS)"
+      }
+    ],
+    "name": "order",
+    "type": "document",
+    "title": "Pedido"
+  }
+]
