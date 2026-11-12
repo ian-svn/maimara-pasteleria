@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Great_Vibes, Inter } from "next/font/google";
+import { Cormorant_Garamond, Inter } from "next/font/google";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { ThemeScript } from "@/components/ThemeScript";
 import "./globals.css";
 
-const greatVibes = Great_Vibes({
-  weight: "400",
+const cormorant = Cormorant_Garamond({
+  weight: ["500", "600", "700"],
   subsets: ["latin"],
-  variable: "--font-great-vibes",
+  variable: "--font-cormorant",
 });
 
 const inter = Inter({
@@ -29,7 +29,8 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body
-        className={`${greatVibes.variable} ${inter.variable} min-h-screen antialiased`}
+        className={`${cormorant.variable} ${inter.variable} min-h-screen antialiased`}
+        suppressHydrationWarning
       >
         <ThemeScript />
         <ThemeProvider>{children}</ThemeProvider>

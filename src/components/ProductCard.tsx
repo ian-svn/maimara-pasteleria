@@ -47,13 +47,13 @@ export function ProductCard({ product }: ProductCardProps) {
             {product.name.charAt(0)}
           </span>
         )}
-        <span className="absolute right-3 top-3 rounded-full bg-maimara-primary/90 px-2.5 py-0.5 text-xs font-medium text-white">
+        <span className="absolute right-3 top-3 rounded-full bg-white/95 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-maimara-primary shadow-sm">
           {categoryLabels[product.category] ?? product.category}
         </span>
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-display text-2xl text-maimara-primary dark:text-maimara-light">
+        <h3 className="font-display text-3xl font-semibold leading-none text-maimara-primary dark:text-maimara-light">
           {product.name}
         </h3>
         <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">

@@ -1,25 +1,24 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FloralEdge } from "@/components/FloralEdge";
 import { CONTACT } from "@/lib/types";
 
 export function Footer() {
   return (
     <footer className="site-footer">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
+      <div className="mx-auto max-w-6xl px-4 pt-8 sm:px-6">
+        <FloralEdge />
+      </div>
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-2 sm:px-6 lg:grid-cols-3">
         <div className="flex flex-col items-start gap-3">
           <Image
             src="/images/logo.png"
             alt="Maimará"
-            width={80}
-            height={80}
-            className="h-16 w-auto"
+            width={220}
+            height={152}
+            className="h-24 w-auto"
           />
-          <p className="font-display text-2xl text-maimara-primary dark:text-maimara-light">
-            Maimará
-          </p>
-          <p className="text-sm tracking-widest uppercase text-maimara-secondary">
-            Pastelería Artesanal
-          </p>
+          <p className="kicker">Mesas dulces & tortas de diseño</p>
         </div>
 
         <div>

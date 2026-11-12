@@ -19,9 +19,12 @@ const orderProjection = `{
   contactPhone,
   orderDate,
   deliveryMethod,
+  paymentMethod,
+  paymentStatus,
   status,
   totalAmount,
   deliveryAddress,
+  deliveryDeadline,
   "userId": user._ref,
   "userEmail": user->email,
   "items": items[] {

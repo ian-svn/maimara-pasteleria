@@ -90,6 +90,29 @@ export function AdminProductManager({ products }: { products: Product[] }) {
     if (res.ok) router.refresh();
   };
 
+  const deleteProduct = async (product: Product) => {
+    const confirmed = window.confirm(
+      `¿Borrar "${product.name}" de Sanity? Esta acción no se puede deshacer.`
+    );
+    if (!confirmed) return;
+
+    setError("");
+    setMessage("");
+
+    const res = await fetch(`/api/admin/products/${product._id}`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.error ?? "No se pudo borrar el producto");
+      return;
+    }
+
+    setMessage(`"${product.name}" fue eliminado`);
+    router.refresh();
+  };
+
   return (
     <div className="space-y-8">
       <form onSubmit={handleSubmit} className="card-artisan space-y-5 p-6">
@@ -257,13 +280,22 @@ export function AdminProductManager({ products }: { products: Product[] }) {
                     {product.available === false ? " · Oculto" : ""}
                   </p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => toggleAvailability(product)}
-                  className="rounded-full border border-maimara-blush px-4 py-2 text-sm font-medium transition hover:bg-maimara-cream dark:border-maimara-border dark:hover:bg-maimara-input"
-                >
-                  {product.available === false ? "Mostrar" : "Ocultar"}
-                </button>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => toggleAvailability(product)}
+                    className="rounded-full border border-maimara-blush px-4 py-2 text-sm font-medium transition hover:bg-maimara-cream dark:border-maimara-border dark:hover:bg-maimara-input"
+                  >
+                    {product.available === false ? "Mostrar" : "Ocultar"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => deleteProduct(product)}
+                    className="rounded-full border border-red-300 px-4 py-2 text-sm font-medium text-red-700 transition hover:bg-red-50 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/40"
+                  >
+                    Borrar
+                  </button>
+                </div>
               </article>
             );
           })}

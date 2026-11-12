@@ -199,6 +199,38 @@ export const order = defineType({
       hidden: ({ document }) => document?.deliveryMethod !== "delivery",
     }),
     defineField({
+      name: "paymentMethod",
+      title: "Tipo de pago",
+      type: "string",
+      options: {
+        list: [
+          { title: "Efectivo", value: "cash" },
+          { title: "Transferencia", value: "transfer" },
+          { title: "Mercado Pago", value: "mercadopago" },
+        ],
+      },
+    }),
+    defineField({
+      name: "paymentStatus",
+      title: "Estado del pago",
+      type: "string",
+      options: {
+        list: [
+          { title: "Pendiente", value: "pending" },
+          { title: "El cliente avisó que pagó", value: "informed" },
+          { title: "Pagado", value: "paid" },
+        ],
+      },
+      initialValue: "pending",
+    }),
+    defineField({
+      name: "deliveryDeadline",
+      title: "Plazo de entrega",
+      type: "datetime",
+      description:
+        "Lo asigna la pastelería después de coordinar con quien hizo el pedido.",
+    }),
+    defineField({
       name: "status",
       title: "Estado del pedido",
       type: "string",

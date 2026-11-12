@@ -4,7 +4,13 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useCart } from "@/context/CartContext";
-import type { DeliveryMethod } from "@/lib/types";
+import { phoneLinks } from "@/lib/phone";
+import {
+  CONTACT,
+  PAYMENT_METHOD_LABELS,
+  type DeliveryMethod,
+  type PaymentMethod,
+} from "@/lib/types";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("es-AR", {
@@ -20,6 +26,7 @@ export default function CheckoutPage() {
     useCart();
   const [deliveryMethod, setDeliveryMethod] =
     useState<DeliveryMethod>("pickup");
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("transfer");
   const [customerName, setCustomerName] = useState(
     session?.user?.name ?? ""
   );
@@ -45,6 +52,7 @@ export default function CheckoutPage() {
           deliveryMethod,
           deliveryAddress:
             deliveryMethod === "delivery" ? deliveryAddress : undefined,
+          paymentMethod,
           items: items.map(({ product, quantity }) => ({
             productId: product._id,
             quantity,
@@ -88,17 +96,40 @@ export default function CheckoutPage() {
   }
 
   if (submitted) {
+    const contact = phoneLinks(contactPhone);
     return (
       <div className="mx-auto max-w-lg px-4 py-20 text-center">
         <div className="card-artisan p-8">
           <span className="text-4xl">🎂</span>
-          <h1 className="mt-4 font-display text-4xl text-maimara-primary dark:text-maimara-light">
+          <h1 className="mt-4 font-display text-5xl font-semibold text-maimara-primary dark:text-maimara-light">
             ¡Pedido recibido!
           </h1>
           <p className="mt-3 text-muted">
-            Gracias {customerName}. Te contactaremos pronto para confirmar tu
-            pedido.
+            Gracias {customerName}. Maimará te va a contactar al{" "}
+            <span className="font-semibold text-neutral-900 dark:text-white">
+              {contactPhone}
+            </span>{" "}
+            para acordar el plazo de entrega. El pago elegido es{" "}
+            {PAYMENT_METHOD_LABELS[paymentMethod].toLowerCase()}.
           </p>
+          <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-center">
+            {contact.tel && (
+              <a
+                href={contact.tel}
+                className="text-sm font-semibold text-maimara-primary underline dark:text-maimara-light"
+              >
+                Tu teléfono: {contactPhone}
+              </a>
+            )}
+            <a
+              href={`https://wa.me/${CONTACT.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-semibold text-maimara-primary underline dark:text-maimara-light"
+            >
+              Escribirle a Maimará
+            </a>
+          </div>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <Link
               href={`/tracking/${orderId}`}
@@ -120,12 +151,12 @@ export default function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-      <h1 className="font-display text-4xl text-maimara-primary dark:text-maimara-light">
-        Checkout
+      <h1 className="font-display text-5xl font-semibold text-maimara-primary dark:text-maimara-light">
+        Tu pedido
       </h1>
       <p className="mt-1 text-muted">
-        Sesión: {session?.user?.email}. Completá tus datos para confirmar el
-        pedido.
+        Sesión: {session?.user?.email}. Dejá un teléfono: es el número con el
+        que Maimará coordina el plazo de entrega.
       </p>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-2">
@@ -202,7 +233,7 @@ export default function CheckoutPage() {
           </div>
           <div>
             <label htmlFor="contactPhone" className="label-field">
-              Teléfono
+              Teléfono de contacto
             </label>
             <input
               id="contactPhone"
@@ -211,8 +242,12 @@ export default function CheckoutPage() {
               value={contactPhone}
               onChange={(e) => setContactPhone(e.target.value)}
               className="input-field"
-              placeholder="+54 9 11 ..."
+              placeholder="11 1234-5678"
             />
+            <p className="mt-1.5 text-xs text-muted">
+              Aparece en el pedido para que te llamen o te escriban y acuerden
+              la fecha de entrega.
+            </p>
           </div>
 
           <fieldset>
@@ -254,6 +289,36 @@ export default function CheckoutPage() {
                   </p>
                 </div>
               </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend className="label-field">Tipo de pago</legend>
+            <div className="mt-3 space-y-3">
+              {(
+                [
+                  ["cash", "Efectivo", "Lo pagás al retirar o cuando llega el pedido."],
+                  ["transfer", "Transferencia", "Pagás por transferencia y lo avisás desde el pedido."],
+                  ["mercadopago", "Mercado Pago", "Pagás con Mercado Pago y lo avisás desde el pedido."],
+                ] as const
+              ).map(([value, title, detail]) => (
+                <label key={value} className="option-card">
+                  <input
+                    type="radio"
+                    name="payment"
+                    value={value}
+                    checked={paymentMethod === value}
+                    onChange={() => setPaymentMethod(value)}
+                    className="mt-1 accent-maimara-primary"
+                  />
+                  <div>
+                    <p className="font-medium text-neutral-900 dark:text-white">
+                      {title}
+                    </p>
+                    <p className="text-sm text-muted">{detail}</p>
+                  </div>
+                </label>
+              ))}
             </div>
           </fieldset>
 

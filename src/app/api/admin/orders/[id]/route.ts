@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/admin";
 import { getWriteClient } from "@/lib/sanity";
-import type { DeliveryMethod, OrderStatus } from "@/lib/types";
+import type { DeliveryMethod, OrderStatus, PaymentStatus } from "@/lib/types";
 import { statusesForDelivery } from "@/lib/types";
 
 interface RouteParams {
@@ -16,10 +16,23 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
   try {
     const body = await request.json();
-    const status = body.status as OrderStatus;
+    const status = body.status as OrderStatus | undefined;
+    const hasStatus = typeof status === "string" && status.length > 0;
+    const hasDeadline = Object.prototype.hasOwnProperty.call(
+      body,
+      "deliveryDeadline"
+    );
+    const paymentStatus = body.paymentStatus as PaymentStatus | undefined;
+    const hasPayment =
+      paymentStatus === "pending" ||
+      paymentStatus === "informed" ||
+      paymentStatus === "paid";
 
-    if (!status) {
-      return NextResponse.json({ error: "Estado requerido" }, { status: 400 });
+    if (!hasStatus && !hasDeadline && !hasPayment) {
+      return NextResponse.json(
+        { error: "Nada para actualizar" },
+        { status: 400 }
+      );
     }
 
     const client = getWriteClient();
@@ -38,17 +51,45 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       );
     }
 
-    const allowed = statusesForDelivery(order.deliveryMethod).map((s) => s.value);
-    if (!allowed.includes(status)) {
-      return NextResponse.json(
-        { error: "Estado inválido para este método de entrega" },
-        { status: 400 }
+    if (hasStatus) {
+      const allowed = statusesForDelivery(order.deliveryMethod).map(
+        (s) => s.value
       );
+      if (!allowed.includes(status)) {
+        return NextResponse.json(
+          { error: "Estado inválido para este método de entrega" },
+          { status: 400 }
+        );
+      }
     }
 
-    await client.patch(id).set({ status }).commit();
+    let deliveryDeadline: string | null = null;
+    if (hasDeadline && body.deliveryDeadline) {
+      const parsed = new Date(String(body.deliveryDeadline));
+      if (Number.isNaN(parsed.getTime())) {
+        return NextResponse.json(
+          { error: "Plazo de entrega inválido" },
+          { status: 400 }
+        );
+      }
+      deliveryDeadline = parsed.toISOString();
+    }
 
-    return NextResponse.json({ ok: true, status });
+    const set: Record<string, string> = {};
+    if (hasStatus && status) set.status = status;
+    if (hasDeadline && deliveryDeadline) set.deliveryDeadline = deliveryDeadline;
+    if (hasPayment && paymentStatus) set.paymentStatus = paymentStatus;
+
+    const patch = client.patch(id);
+    if (Object.keys(set).length > 0) patch.set(set);
+    if (hasDeadline && !deliveryDeadline) patch.unset(["deliveryDeadline"]);
+    await patch.commit();
+
+    return NextResponse.json({
+      ok: true,
+      status: hasStatus ? status : order.status,
+      deliveryDeadline,
+    });
   } catch (err) {
     console.error("Error al actualizar estado:", err);
     return NextResponse.json(

@@ -1,4 +1,6 @@
 export type DeliveryMethod = "pickup" | "delivery";
+export type PaymentMethod = "cash" | "transfer" | "mercadopago";
+export type PaymentStatus = "pending" | "informed" | "paid";
 
 export type PickupStatus = "preparing" | "ready";
 export type DeliveryStatus = "preparing" | "ready" | "on_the_way" | "delivered";
@@ -37,9 +39,13 @@ export interface Order {
   orderDate: string;
   items: OrderItem[];
   deliveryMethod: DeliveryMethod;
+  paymentMethod?: PaymentMethod;
+  paymentStatus?: PaymentStatus;
   status: OrderStatus;
   totalAmount: number;
   deliveryAddress?: string;
+  /** Fecha y hora que asigna la pastelería después de coordinar. */
+  deliveryDeadline?: string;
   userId?: string;
   userEmail?: string;
 }
@@ -49,6 +55,7 @@ export interface CreateOrderPayload {
   contactPhone: string;
   deliveryMethod: DeliveryMethod;
   deliveryAddress?: string;
+  paymentMethod: PaymentMethod;
   items: { productId: string; quantity: number }[];
 }
 
@@ -72,6 +79,18 @@ export const DELIVERY_STEPS: { key: DeliveryStatus; label: string }[] = [
   { key: "on_the_way", label: "En camino" },
   { key: "delivered", label: "Entregado" },
 ];
+
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  cash: "Efectivo",
+  transfer: "Transferencia",
+  mercadopago: "Mercado Pago",
+};
+
+export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
+  pending: "Pendiente de pago",
+  informed: "El cliente avisó que pagó",
+  paid: "Pagado",
+};
 
 export const STATUS_LABELS: Record<OrderStatus, string> = {
   preparing: "En preparación",

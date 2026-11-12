@@ -3,11 +3,13 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --color-maimara-primary: #da3c55;
-  --color-maimara-secondary: #e7758f;
-  --color-maimara-light: #ffa4b3;
-  --color-maimara-blush: #fbc9d4;
-  --color-maimara-cream: #fff5f7;
+  /* Extraídos del logo y las tarjetas: frambuesa, pétalo y rubor */
+  --color-maimara-primary: #d83850;
+  --color-maimara-secondary: #e87088;
+  --color-maimara-light: #f8a0b0;
+  --color-maimara-blush: #fde4ea;
+  --color-maimara-cream: #fff8f7;
+  --color-maimara-leaf: #8fb573;
 
   /* Modo oscuro — medianoche cálida (oscuro real, tinte rosa Maimará) */
   --color-maimara-charcoal: #1a1618;
@@ -19,11 +21,11 @@
   --color-maimara-muted: #8a7b81;
   --color-maimara-subtle: #b5a8ad;
 
-  --font-display: var(--font-great-vibes);
+  --font-display: var(--font-cormorant);
   --font-body: var(--font-inter);
 
-  --shadow-artisan: 0 4px 20px rgba(218, 60, 85, 0.12);
-  --shadow-card: 0 4px 24px rgba(218, 60, 85, 0.08);
+  --shadow-artisan: 0 4px 20px rgba(216, 56, 80, 0.12);
+  --shadow-card: 0 4px 24px rgba(216, 56, 80, 0.08);
   --shadow-card-dark: 0 8px 32px rgba(0, 0, 0, 0.35);
   --radius-artisan: 1.25rem;
 }
@@ -48,12 +50,12 @@
     background-image:
       radial-gradient(
         ellipse 90% 55% at 50% -15%,
-        rgba(218, 60, 85, 0.11),
+        rgba(216, 56, 80, 0.14),
         transparent 55%
       ),
       radial-gradient(
         ellipse 50% 35% at 100% 100%,
-        rgba(231, 117, 143, 0.06),
+        rgba(232, 112, 136, 0.08),
         transparent 50%
       );
   }
@@ -132,5 +134,29 @@
 
   .dark-section-title {
     @apply text-maimara-primary dark:text-maimara-light;
+  }
+
+  .brand-hero {
+    background:
+      radial-gradient(
+        ellipse 70% 55% at 50% 0%,
+        rgba(248, 160, 176, 0.55),
+        transparent 72%
+      ),
+      var(--color-maimara-cream);
+  }
+
+  html.dark .brand-hero {
+    background:
+      radial-gradient(
+        ellipse 70% 55% at 50% 0%,
+        rgba(216, 56, 80, 0.28),
+        transparent 70%
+      ),
+      var(--color-maimara-carbon);
+  }
+
+  .kicker {
+    @apply text-xs font-semibold uppercase tracking-[0.28em] text-maimara-secondary;
   }
 }

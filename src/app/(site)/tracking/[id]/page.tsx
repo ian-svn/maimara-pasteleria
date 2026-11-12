@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
+import { ConfirmPaymentButton } from "@/components/ConfirmPaymentButton";
 import { OrderAutoRefresh } from "@/components/OrderAutoRefresh";
 import { OrderTracker } from "@/components/OrderTracker";
+import { formatDeadline } from "@/lib/phone";
 import { getOrder } from "@/lib/queries";
+import { CONTACT, PAYMENT_METHOD_LABELS } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -93,7 +96,45 @@ export default async function TrackingPage({ params }: TrackingPageProps) {
         </p>
       </div>
 
-      <div className="card-artisan mt-10 p-6 sm:p-10">
+      <div className="card-artisan mt-10 p-6 text-center sm:p-8">
+        <p className="kicker">Plazo de entrega</p>
+        {order.deliveryDeadline ? (
+          <p className="mt-3 font-display text-4xl font-semibold capitalize text-maimara-primary dark:text-maimara-light">
+            {formatDeadline(order.deliveryDeadline)}
+          </p>
+        ) : (
+          <p className="mt-3 text-muted">
+            Todavía no está confirmado. Maimará te va a contactar al{" "}
+            <span className="font-semibold text-neutral-900 dark:text-white">
+              {order.contactPhone}
+            </span>{" "}
+            para acordarlo.
+          </p>
+        )}
+        <p className="mt-4 text-sm text-muted">
+          {order.deliveryMethod === "pickup"
+            ? "Retiro por el local · Parque Chacabuco"
+            : `Envío a domicilio${order.deliveryAddress ? ` · ${order.deliveryAddress}` : ""}`}
+          {order.paymentMethod
+            ? ` · ${PAYMENT_METHOD_LABELS[order.paymentMethod]}`
+            : ""}
+        </p>
+      </div>
+
+      <div className="card-artisan mt-6 p-6">
+        <h2 className="font-semibold text-neutral-900 dark:text-white">
+          Pago
+        </h2>
+        <div className="mt-3">
+          <ConfirmPaymentButton
+            orderId={order._id}
+            paymentMethod={order.paymentMethod}
+            paymentStatus={order.paymentStatus}
+          />
+        </div>
+      </div>
+
+      <div className="card-artisan mt-6 p-6 sm:p-10">
         <OrderTracker
           deliveryMethod={order.deliveryMethod}
           status={order.status}
@@ -126,7 +167,7 @@ export default async function TrackingPage({ params }: TrackingPageProps) {
       <p className="mt-6 text-center text-sm text-muted">
         ¿Consultas? Escribinos por{" "}
         <a
-          href="https://wa.me/5491132416973"
+          href={`https://wa.me/${CONTACT.whatsapp}`}
           className="text-maimara-primary underline dark:text-maimara-light"
         >
           WhatsApp

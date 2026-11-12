@@ -56,18 +56,15 @@ export function Navbar() {
   return (
     <header className="site-header">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/" className="flex items-center">
           <Image
             src="/images/logo.png"
             alt="Maimará Pastelería Artesanal"
-            width={56}
-            height={56}
-            className="h-12 w-auto sm:h-14"
+            width={220}
+            height={152}
+            className="h-14 w-auto sm:h-16"
             priority
           />
-          <span className="hidden font-display text-2xl text-maimara-primary sm:block sm:text-3xl dark:text-maimara-light">
-            Maimará
-          </span>
         </Link>
 
         <div className="flex items-center gap-1.5 sm:gap-3">

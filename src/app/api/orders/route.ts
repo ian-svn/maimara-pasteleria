@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getWriteClient, isSanityConfigured } from "@/lib/sanity";
 import { getProductsByIds } from "@/lib/queries";
-import type { CreateOrderPayload, DeliveryMethod } from "@/lib/types";
+import type {
+  CreateOrderPayload,
+  DeliveryMethod,
+  PaymentMethod,
+} from "@/lib/types";
 
 export async function POST(request: Request) {
   if (!isSanityConfigured) {
@@ -27,6 +31,7 @@ export async function POST(request: Request) {
       !body.customerName?.trim() ||
       !body.contactPhone?.trim() ||
       !body.deliveryMethod ||
+      !body.paymentMethod ||
       !body.items?.length
     ) {
       return NextResponse.json(
@@ -39,6 +44,18 @@ export async function POST(request: Request) {
     if (deliveryMethod !== "pickup" && deliveryMethod !== "delivery") {
       return NextResponse.json(
         { error: "Método de entrega inválido" },
+        { status: 400 }
+      );
+    }
+
+    const paymentMethod = body.paymentMethod as PaymentMethod;
+    if (
+      paymentMethod !== "cash" &&
+      paymentMethod !== "transfer" &&
+      paymentMethod !== "mercadopago"
+    ) {
+      return NextResponse.json(
+        { error: "Tipo de pago inválido" },
         { status: 400 }
       );
     }
@@ -94,6 +111,8 @@ export async function POST(request: Request) {
         deliveryMethod === "delivery"
           ? body.deliveryAddress?.trim()
           : undefined,
+      paymentMethod,
+      paymentStatus: "pending",
       status: "preparing",
       totalAmount,
       items: normalizedItems.map((item, i) => ({

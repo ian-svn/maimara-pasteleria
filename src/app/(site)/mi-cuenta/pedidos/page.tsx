@@ -2,7 +2,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { getOrdersByUser } from "@/lib/queries";
-import { STATUS_LABELS, type Order } from "@/lib/types";
+import { ConfirmPaymentButton } from "@/components/ConfirmPaymentButton";
+import { formatDeadline } from "@/lib/phone";
+import {
+  PAYMENT_METHOD_LABELS,
+  STATUS_LABELS,
+  type Order,
+} from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -37,6 +43,14 @@ function OrderCard({ order }: { order: Order }) {
               : "Envío a CABA"}
             {" · "}
             {STATUS_LABELS[order.status] ?? order.status}
+            {order.paymentMethod
+              ? ` · ${PAYMENT_METHOD_LABELS[order.paymentMethod]}`
+              : ""}
+          </p>
+          <p className="mt-2 text-sm text-neutral-800 dark:text-neutral-100">
+            {order.deliveryDeadline
+              ? `Entrega: ${formatDeadline(order.deliveryDeadline)}`
+              : `Plazo a confirmar. Te contactan al ${order.contactPhone}.`}
           </p>
         </div>
         <p className="text-lg font-bold text-maimara-primary dark:text-maimara-light">
@@ -52,6 +66,14 @@ function OrderCard({ order }: { order: Order }) {
           </li>
         ))}
       </ul>
+
+      <div className="mt-4">
+        <ConfirmPaymentButton
+          orderId={order._id}
+          paymentMethod={order.paymentMethod}
+          paymentStatus={order.paymentStatus}
+        />
+      </div>
 
       <Link
         href={`/tracking/${order._id}`}

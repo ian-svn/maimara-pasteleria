@@ -2,6 +2,7 @@ import { CartProvider } from "@/context/CartContext";
 import { AuthProvider } from "@/components/AuthProvider";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 export default function SiteLayout({
   children,
@@ -15,6 +16,7 @@ export default function SiteLayout({
           <Navbar />
           <main className="flex-1">{children}</main>
           <Footer />
+          <WhatsAppButton />
         </CartProvider>
       </AuthProvider>
     </div>
